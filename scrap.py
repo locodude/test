@@ -24,49 +24,51 @@ def main():
       links.append(link['href'])
   
   links = list(set([site_name+l for l in links if not re.search('http', l)]))
+  links = links[links.index(site_name+'/')]
 
   #for link in links:
   #  print(link)
   
-  test_link = links[links.index(site_name+'/')]
-  print(test_link)
+  for link in links:
+    # test_link = links[links.index(site_name+'/')]
+    # print(test_link)
 
-  text = requests.get(test_link, headers=agent).text
-  par = BeautifulSoup(text, 'html.parser')
-  
-  html = '''
-  <html>
-  <head>
-  <title>That is the display section.</title>
-  </head>
-  <body>
-  <p>So got the stairs. <span>Hi dog</span> Crazy</p>
-  <p></p>
-  <p>Yes, said Arthur, yes I did. It was displayed at the bottom of the locked filing cabinet stuck in a dormant toilet with a sign on the door saying 'Be wary of the leopard'</p></body>
-  </html>
-  '''
-  #par = BeautifulSoup(html, 'html.parser')
+    text = requests.get(link, headers=agent).text
+    par = BeautifulSoup(text, 'html.parser')
+    
+    # html = '''
+    # <html>
+    # <head>
+    # <title>That is the display section.</title>
+    # </head>
+    # <body>
+    # <p>So got the stairs. <span>Hi dog</span> Crazy</p>
+    # <p></p>
+    # <p>Yes, said Arthur, yes I did. It was displayed at the bottom of the locked filing cabinet stuck in a dormant toilet with a sign on the door saying 'Be wary of the leopard'</p></body>
+    # </html>
+    # '''
+    #par = BeautifulSoup(html, 'html.parser')
 
-  for i in par.findAll(lab):
-    if i.string is not None and len(str(chi.string).strip()) > 0:
-      sys.stdout.write('\x1b[2K')
-      print("\rTranslating: {0}".format(i.string), end="")
-      i.string.replace_with(ts.google(i.string, from_language='en', to_language='es'))
-    else:
-      for chi in i.children:
-        if chi.string is not None and len(str(chi.string).strip()) > 0:
-          #print(chi.next_element)
-          sys.stdout.write('\x1b[2K')
-          print("\rTranslating: {0}".format(chi.string), end="")
-          time.sleep(0.5)
-          ns = ts.google(chi.string, from_language='en', to_language='es')
-          chi.string.replace_with(ns)
+    for i in par.findAll(lab):
+      if i.string is not None and len(str(chi.string).strip()) > 0:
+        sys.stdout.write('\x1b[2K')
+        print("\rTranslating: {0}".format(i.string), end="")
+        i.string.replace_with(ts.google(i.string, from_language='en', to_language='es'))
+      else:
+        for chi in i.children:
+          if chi.string is not None and len(str(chi.string).strip()) > 0:
+            sys.stdout.write('\x1b[2K')
+            print("\rTranslating: {0}".format(chi.string), end="")
+            time.sleep(0.5)
+            ns = ts.google(chi.string, from_language='en', to_language='es')
+            chi.string.replace_with(ns)
 
-  test_res = 'classcentral.html'
-  par = str(par)
-  f = open('./'+test_res, 'w+')
-  f.write(par)
-  f.close()
+    res = link.replace(site_name, "home_")
+    res = "_".join(res.split('/'))
+    par = str(par)
+    f = open('./paginas/'+res, 'w+')
+    f.write(par)
+    f.close()
 
 if __name__ == '__main__':
   main()

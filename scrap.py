@@ -25,9 +25,10 @@ def main():
       links.append(link['href'])
   
   links = list(set([site_name+l for l in links if not re.search('http', l)]))
-  ind = links.index(site_name+'/')
+  links = sorted(links, key=len)
+  #ind = links.index(site_name+'/')
   #links = [links[ind]] + links[ind+21:ind+50]
-  links = links[ind+21:ind+50]
+  links = links[121:]
   
   #for link in links:
   #  print(link)
@@ -39,13 +40,13 @@ def main():
     par = BeautifulSoup(text, 'html.parser')
     
     for i in par.findAll(lab):
-      if i.string is not None and len(str(i.string).strip()) > 0:
+      if i.string is not None and len(str(i.string).strip()) > 0 and i.string != '\n':
         sys.stdout.write('\x1b[2K')
         print("\r\tTranslating: {0}".format(i.string), end="")
         i.string.replace_with(ts.google(i.string, from_language='en', to_language='es'))
       else:
         for chi in i.children:
-          if chi.string is not None and len(str(chi.string).strip()) > 0:
+          if chi.string is not None and len(str(chi.string).strip()) > 0 and chi.string != '\n':
             sys.stdout.write('\x1b[2K')
             print("\r\tTranslating: {0}".format(chi.string), end="")
             ns = ts.google(chi.string, from_language='en', to_language='hi')
